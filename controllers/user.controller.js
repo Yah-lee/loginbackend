@@ -16,13 +16,15 @@ exports.createUser = async (req, res) => {
     return res.status(201).json(newUser);
   } catch (err) {
     console.error("Error during user creation:", err);
-    return res.status(500).json({ error: "An error occurred while creating the user" });
+    return res
+      .status(500)
+      .json({ error: "An error occurred while creating the user" });
   }
 };
 
 exports.login = async (req, res) => {
   const { emailandphonenumer, password } = req.body;
-  
+
   try {
     console.log("Received login request for:", emailandphonenumer);
 
@@ -36,7 +38,7 @@ exports.login = async (req, res) => {
       console.log("User not found");
       return res.status(400).json({ error: "User or password incorrect" });
     }
-    
+
     console.log("User found:", user.emailandphonenumer);
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -50,21 +52,21 @@ exports.login = async (req, res) => {
     return res.status(200).json(user);
   } catch (err) {
     console.error("Error during login:", err);
-    return res.status(500).json({ error: "An error occurred while processing your request" });
+    return res
+      .status(500)
+      .json({ error: "An error occurred while processing your request" });
   }
 };
 
 exports.findAllUsers = async (req, res) => {
-  try {
-    const users = await User.findAll();
-
-    if (users.length === 0) {
-      return res.status(404).json({ message: "No users found" });
-    }
-
-    return res.status(200).json(users);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: "Failed to find users" });
-  }
+  User.findAndCountAll()
+    .then((data) => {
+      return res.status(200).json(data);
+      if (data.length === 0) {
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      return res.status(500).json({ error: "Failed to find user" });
+    });
 };
