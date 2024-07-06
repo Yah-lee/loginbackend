@@ -26,7 +26,7 @@ exports.createUser = async (req, res) => {
 
     return res.status(201).json(newUser);
   } catch (err) {
-    console.error("Error during user creation:", err.message); // Log the error message
+    console.error("Error during user creation:", err.message);
     return res
       .status(500)
       .json({
