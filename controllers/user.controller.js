@@ -4,24 +4,37 @@ const { error } = require("console");
 const bcrypt = require("bcrypt");
 
 exports.createUser = async (req, res) => {
-  const { emailandphonenumer, password } = req.body;
+  const {
+    username,
+    firstName,
+    lastName,
+    birthday,
+    emailandphonenumer,
+    password,
+  } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
-      emailandphonenumer: emailandphonenumer,
+      username,
+      firstName,
+      lastName,
+      birthday,
+      emailandphonenumer,
       password: hashedPassword,
     });
 
     return res.status(201).json(newUser);
   } catch (err) {
-    console.error("Error during user creation:", err);
+    console.error("Error during user creation:", err.message); // Log the error message
     return res
       .status(500)
-      .json({ error: "An error occurred while creating the user" });
+      .json({
+        error: "An error occurred while creating the user",
+        details: err.message,
+      });
   }
 };
-
 exports.login = async (req, res) => {
   const { emailandphonenumer, password } = req.body;
 
