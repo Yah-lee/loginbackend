@@ -6,7 +6,7 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
-// Import routes
+// Import routesma
 const userRoutes = require("./routes/user.routes");
 
 // Use routes
