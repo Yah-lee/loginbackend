@@ -27,16 +27,15 @@ exports.createUser = async (req, res) => {
     return res.status(201).json(newUser);
   } catch (err) {
     console.error("Error during user creation:", err.message);
-    return res
-      .status(500)
-      .json({
-        error: "An error occurred while creating the user",
-        details: err.message,
-      });
+    return res.status(500).json({
+      error: "An error occurred while creating the user",
+      details: err.message,
+    });
   }
 };
 exports.login = async (req, res) => {
   const { emailandphonenumer, password } = req.body;
+  // const { email_and_phone_number, password } = req.body;
 
   try {
     console.log("Received login request for:", emailandphonenumer);
@@ -72,6 +71,11 @@ exports.login = async (req, res) => {
 };
 
 exports.findAllUsers = async (req, res) => {
+  // try {
+  //   const data = await User.findAndCountAll();
+  //   return res.status(200).json(data);
+  // } catch (error) {}
+
   User.findAndCountAll()
     .then((data) => {
       return res.status(200).json(data);
