@@ -72,3 +72,18 @@ exports.findAllUsers = async (req, res) => {
     return res.status(500).json({ error: "Failed to find users" });
   }
 };
+
+exports.findOneUser = async (req, res) => {
+  const { id } = req.params; 
+
+  try {
+    const user = await User.findOne({ where: { id: id } });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    return res.status(200).json(user);
+  } catch (err) {
+    console.error("Failed to find user:", err);
+    return res.status(500).json({ error: "Failed to find user" });
+  }
+};

@@ -8,5 +8,7 @@ const { loginValidator, registerValidator } = require("../middlewares/validators
 router.post("/", registerValidator, validate, controller.createUser);
 router.post("/login", loginValidator, validate, controller.login);
 router.get("/", controller.findAllUsers);
+router.get("/:id", controller.findOneUser);
+
 
 module.exports = router;
