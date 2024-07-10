@@ -1,6 +1,4 @@
-const { DataTypes, where } = require("sequelize");
 const User = require("../models/user.models");
-const { error } = require("console");
 const bcrypt = require("bcrypt");
 
 exports.createUser = async (req, res) => {
@@ -9,7 +7,8 @@ exports.createUser = async (req, res) => {
     firstName,
     lastName,
     birthday,
-    emailandphonenumer,
+    email,
+    phonenumber,
     password,
   } = req.body;
 
@@ -20,7 +19,8 @@ exports.createUser = async (req, res) => {
       firstName,
       lastName,
       birthday,
-      emailandphonenumer,
+      email,
+      phonenumber,
       password: hashedPassword,
     });
 
@@ -33,33 +33,26 @@ exports.createUser = async (req, res) => {
     });
   }
 };
+
 exports.login = async (req, res) => {
-  const { emailandphonenumer, password } = req.body;
-  // const { email_and_phone_number, password } = req.body;
+  const { email, phonenumber, password } = req.body;
 
   try {
-    console.log("Received login request for:", emailandphonenumer);
-
-    const user = await User.findOne({
-      where: {
-        emailandphonenumer: emailandphonenumer,
-      },
-    });
+    let user;
+    if (email) {
+      user = await User.findOne({ where: { email: email } });
+    } else if (phonenumber) {
+      user = await User.findOne({ where: { phonenumber: phonenumber } });
+    }
 
     if (!user) {
-      console.log("User not found");
       return res.status(400).json({ error: "User or password incorrect" });
     }
 
-    console.log("User found:", user.emailandphonenumer);
-
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      console.log("Invalid password");
       return res.status(401).json({ error: "Invalid password" });
     }
-
-    console.log("Password is valid");
 
     return res.status(200).json(user);
   } catch (err) {
@@ -71,19 +64,11 @@ exports.login = async (req, res) => {
 };
 
 exports.findAllUsers = async (req, res) => {
-  // try {
-  //   const data = await User.findAndCountAll();
-  //   return res.status(200).json(data);
-  // } catch (error) {}
-
-  User.findAndCountAll()
-    .then((data) => {
-      return res.status(200).json(data);
-      if (data.length === 0) {
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      return res.status(500).json({ error: "Failed to find user" });
-    });
+  try {
+    const data = await User.findAndCountAll();
+    return res.status(200).json(data);
+  } catch (err) {
+    console.error("Failed to find users:", err);
+    return res.status(500).json({ error: "Failed to find users" });
+  }
 };
