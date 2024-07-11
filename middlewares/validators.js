@@ -35,7 +35,6 @@ const loginValidator = [
 ];
 
 const registerValidator = [
-  body("username").notEmpty().withMessage("Username is required"),
   body("firstName").notEmpty().withMessage("First name is required"),
   body("lastName").notEmpty().withMessage("Last name is required"),
   body("birthday").isDate().withMessage("Birthday must be a valid date"),
