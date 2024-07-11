@@ -121,3 +121,36 @@ exports.updateUser = async (req, res) => {
     return res.status(500).json({ error: "Failed to update user" });
   }
 };
+
+exports.headAllUsers = async (req, res) => {
+  try {
+    await User.findAndCountAll();
+    return res.status(200).end();
+  } catch (err) {
+    console.error("Failed to find users:", err);
+    return res.status(500).end();
+  }
+};
+
+exports.headOneUser = async (req, res) => {
+  const { id } = req.params; 
+
+  try {
+    const user = await User.findOne({ where: { id: id } });
+    if (!user) {
+      return res.status(404).end();
+    }
+    return res.status(200).end();
+  } catch (err) {
+    console.error("Failed to find user:", err);
+    return res.status(500).end();
+  }
+};
+
+exports.optionsAllUsers = (req, res) => {
+  res.set("Allow", "GET,HEAD,POST,OPTIONS").sendStatus(200);
+};
+
+exports.optionsOneUser = (req, res) => {
+  res.set("Allow", "GET,HEAD,PUT,DELETE,OPTIONS").sendStatus(200);
+};
